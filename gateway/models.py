@@ -1,3 +1,36 @@
 from django.db import models
 
-# Create your models here.
+class BaseModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+class Device(BaseModel):
+    name = models.CharField(max_length=255)
+    serial_number = models.CharField(max_length=255, unique=True)
+    description = models.TextField(blank=True, null=True)
+    location = models.CharField(max_length=100)
+    status = models.BooleanField(default=False)
+
+    class Meta:
+        app_label = 'gateway'
+
+    def __str__(self):
+        return self.name
+    
+class Employee(BaseModel):
+    name = models.CharField(max_length=255)
+    email = models.EmailField()
+    devices = models.ManyToManyField(Device, blank=True)
+
+    def __str__(self):
+        return self.name
+    
+class Service(models.Model):
+    name = models.CharField(max_length=255)
+    devices = models.ManyToManyField(Device, blank=True)
+
+    def __str__(self):
+        return self.name
