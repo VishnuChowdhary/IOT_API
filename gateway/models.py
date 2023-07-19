@@ -1,3 +1,4 @@
+from datetime import timezone
 from django.db import models
 
 class BaseModel(models.Model):
@@ -19,6 +20,15 @@ class Device(BaseModel):
 
     def __str__(self):
         return self.name
+    
+class DeviceValue(BaseModel):
+    device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name='values')
+    temperature = models.FloatField()
+    humidity = models.FloatField()
+    timestamp = models.DateTimeField(default=timezone)
+
+    def __str__(self):
+        return f"{self.device} - {self.temperature}C, {self.humidity}% ({self.timestamp})"
     
 class Employee(BaseModel):
     name = models.CharField(max_length=255)
